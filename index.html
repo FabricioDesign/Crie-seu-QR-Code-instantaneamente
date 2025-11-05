@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fabricio Designer | Gerador de QR Code</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --azul: #0099ff;
+      --azul-escuro: #0a0f1a;
+      --preto: #0d1117;
+      --cinza: #161b22;
+      --branco: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--preto);
+      color: var(--branco);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ===== CABEÇALHO ===== */
+    header {
+      background-color: var(--azul-escuro);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: var(--azul);
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .logo span {
+      color: var(--branco);
+      font-weight: 400;
+      font-size: 1.1rem;
+    }
+
+    nav a {
+      color: var(--branco);
+      text-decoration: none;
+      margin-left: 25px;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--azul);
+    }
+
+    /* ===== CONTEÚDO ===== */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+    }
+
+    .container {
+      background-color: var(--cinza);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      max-width: 480px;
+      width: 100%;
+      transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+    }
+
+    .container h2 {
+      color: var(--azul);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 12px;
+      border: 2px solid var(--azul);
+      border-radius: 6px;
+      background: var(--preto);
+      color: var(--branco);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--branco);
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      background-color: var(--azul);
+      color: var(--branco);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    button:hover {
+      background-color: #0078cc;
+    }
+
+    #loading {
+      display: none;
+      margin-top: 20px;
+      color: var(--azul);
+      font-weight: 500;
+    }
+
+    #qr-code {
+      margin-top: 25px;
+      display: none;
+    }
+
+    #qrImage {
+      width: 100%;
+      max-width: 320px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ===== CARROSSEL ===== */
+    .carrossel {
+      width: 100%;
+      max-width: 1080px;
+      height: 350px;
+      margin: 60px auto;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .carrossel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .carrossel img.active {
+      opacity: 1;
+    }
+
+    /* ===== RODAPÉ ===== */
+    footer {
+      background-color: var(--azul-escuro);
+      text-align: center;
+      padding: 20px 10px;
+      color: var(--branco);
+      font-size: 0.9rem;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    footer a {
+      color: var(--azul);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+      .container {
+        width: 95%;
+      }
+      .carrossel {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== CABEÇALHO ===== -->
+  <header>
+    <div class="logo">Fabricio <span>Designer</span></div>
+    <nav>
+      <a href="https://wa.me/message/SNJ75IX6MKHBP1" target="_blank">WhatsApp</a>
+      <a href="https://instagram.com/fabriciodesigner_" target="_blank">Instagram</a>
+      <a href="https://www.behance.net/fabriciode2f6f">behance</a>
+    </nav>
+  </header>
+
+  <!-- ===== CONTEÚDO ===== -->
+  <main>
+    <div class="container">
+      <h2>Crie seu QR Code instantaneamente</h2>
+      <input type="text" id="inputLink" placeholder="Digite o link ou texto aqui" />
+      <button onclick="gerarQRCode()">Gerar QR Code</button>
+
+      <div id="loading">Gerando QR Code...</div>
+
+      <div id="qr-code">
+        <img id="qrImage" src="" alt="QR Code Gerado" />
+        <p>Seu QR Code está pronto!</p>
+        <a id="downloadLink" href="#" download="qrcode.png">
+          <button>Baixar QR Code</button>
+        </a>
+      </div>
+    </div>
+
+    <!-- ===== ÁREA DE PATROCÍNIO ===== -->
+    <div class="carrossel">
+      <img src="pat1.jpg" class="active" alt="Patrocínio 1">
+      <img src="pat2.jpg" alt="Patrocínio 2">
+      <img src="pat3.jpg" alt="Patrocínio 3">
+    </div>
+  </main>
+
+  <!-- ===== RODAPÉ ===== -->
+  <footer>
+    © 2025 Fabricio Designer — Todos os direitos reservados |
+    <a href="https://instagram.com/fabriciodesigner_" target="_blank">@fabriciodesigner_</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    function gerarQRCode() {
+      const inputLink = document.getElementById('inputLink').value.trim();
+      const loading = document.getElementById('loading');
+      const qrCodeContainer = document.getElementById('qr-code');
+      const qrImage = document.getElementById('qrImage');
+      const downloadLink = document.getElementById('downloadLink');
+
+      if (!inputLink) {
+        alert('Por favor, digite um link ou texto.');
+        return;
+      }
+
+      loading.style.display = 'block';
+      qrCodeContainer.style.display = 'none';
+
+      QRCode.toDataURL(inputLink, { width: 600, height: 600 }, function (err, url) {
+        loading.style.display = 'none';
+        qrCodeContainer.style.display = 'block';
+        qrImage.src = url;
+        downloadLink.href = url;
+      });
+    }
+
+    // ===== CARROSSEL AUTOMÁTICO =====
+    const imagens = document.querySelectorAll('.carrossel img');
+    let index = 0;
+
+    function trocarImagem() {
+      imagens[index].classList.remove('active');
+      index = (index + 1) % imagens.length;
+      imagens[index].classList.add('active');
+    }
+
+    setInterval(trocarImagem, 4000);
+  </script>
+</body>
+</html>
+
